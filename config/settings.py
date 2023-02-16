@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'model.routine',
     
     'rest_framework',
+    'drf_spectacular',
     
     'django.contrib.admin',
     'django.contrib.auth',
@@ -104,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
@@ -120,3 +121,17 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Django rest framework definition
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+
+# drf-spectacular definition
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Todo routine service API',
+    'TITLE': 'Todo routine service server API docs',
+    'VERSION': '1.0.0',
+}
