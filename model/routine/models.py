@@ -22,3 +22,18 @@ class Routine(DeletedAndTimeStampedModel):
     
     class Meta:
         db_table = 'routine'
+
+
+class RoutineResult(DeletedAndTimeStampedModel): 
+    RESULT_CHOICES = (
+        ('NOT', 'NOT'),
+        ('TRY', 'TRY'),
+        ('DONE', 'DONE'),
+    )
+       
+    routine_result_id = models.BigAutoField(primary_key=True)
+    routine_id = models.ForeignKey(Routine, on_delete=models.CASCADE)
+    result = models.CharField(max_length=4, choices=RESULT_CHOICES)
+    
+    class Meta:
+        db_table = 'routine_result'
