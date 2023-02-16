@@ -7,8 +7,8 @@ from model.core.models import TimeStampedModel
 
 class Routine(DeletedAndTimeStampedModel):
     CATEGORY_CHOICES = (
-        ('MIRACLE', 'MIRACLE'),
-        ('HOMEWORK', 'HOMEWORK'),
+        ("MIRACLE", "MIRACLE"),
+        ("HOMEWORK", "HOMEWORK"),
     )
     
     routine_id = models.BigAutoField(primary_key=True)
@@ -19,17 +19,17 @@ class Routine(DeletedAndTimeStampedModel):
     title = models.CharField(max_length=150)
     category = models.CharField(max_length=8, choices=CATEGORY_CHOICES)
     goal = models.TextField()
-    is_alarm = models.BooleanField('alarm', default=False)
+    is_alarm = models.BooleanField("alarm", default=False)
     
     class Meta:
-        db_table = 'routine'
+        db_table = "routine"
 
 
 class RoutineResult(DeletedAndTimeStampedModel): 
     RESULT_CHOICES = (
-        ('NOT', 'NOT'),
-        ('TRY', 'TRY'),
-        ('DONE', 'DONE'),
+        ("NOT", "NOT"),
+        ("TRY", "TRY"),
+        ("DONE", "DONE"),
     )
        
     routine_result_id = models.BigAutoField(primary_key=True)
@@ -37,7 +37,7 @@ class RoutineResult(DeletedAndTimeStampedModel):
     result = models.CharField(max_length=4, choices=RESULT_CHOICES)
     
     class Meta:
-        db_table = 'routine_result'
+        db_table = "routine_result"
         
         
 class RoutineDay(TimeStampedModel):
