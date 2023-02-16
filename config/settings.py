@@ -26,6 +26,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'model.routine',
+    
     'rest_framework',
     
     'django.contrib.admin',
