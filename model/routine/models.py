@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 
 from model.core.models import DeletedAndTimeStampedModel
+from model.core.models import TimeStampedModel
 
 
 class Routine(DeletedAndTimeStampedModel):
@@ -37,3 +38,20 @@ class RoutineResult(DeletedAndTimeStampedModel):
     
     class Meta:
         db_table = 'routine_result'
+        
+        
+class RoutineDay(TimeStampedModel):
+    WEEKDAY_CHOICES = (
+        ("SUN", "SUN"),
+        ("MON", "MON"),
+        ("TUE", "TUE"),
+        ("WED", "WED"),
+        ("THU", "THU"),
+        ("FRI", "FRI"),
+        ("SAT", "SAT")
+    )
+    day = models.CharField(max_length=3, choices=WEEKDAY_CHOICES)
+    routine_id = models.ForeignKey(Routine, on_delete=models.CASCADE)
+    
+    class Meta:
+        db_table = "routine_day"
