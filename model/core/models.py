@@ -9,3 +9,6 @@ class TimeStampedModel(models.Model):
         
 class DeletedAndTimeStampedModel(TimeStampedModel):
     is_deleted = models.BooleanField("deleted", default=False)
+    
+    class Meta:
+        abstract = True
