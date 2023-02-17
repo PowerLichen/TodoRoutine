@@ -27,9 +27,11 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'model.routine',
+    'model.user',
     
     'rest_framework',
     'drf_spectacular',
+    'rest_framework_simplejwt',
     
     'django.contrib.admin',
     'django.contrib.auth',
@@ -123,8 +125,19 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# User model definition
+AUTH_USER_MODEL = "user.User"
+
+AUTHENTICATION_BACKENDS = [
+    'model.user.authenticate.EmailModelBackend',
+]
+
+
 # Django rest framework definition
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
