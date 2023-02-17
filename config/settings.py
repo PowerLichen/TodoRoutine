@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_spectacular',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     
     'django.contrib.admin',
     'django.contrib.auth',
@@ -134,7 +135,10 @@ AUTHENTICATION_BACKENDS = [
 
 
 # Django rest framework definition
-REST_FRAMEWORK = {
+REST_FRAMEWORK = {    
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
