@@ -6,6 +6,7 @@ from rest_framework.viewsets import GenericViewSet
 from api.routine import schemas
 from api.routine.serializers import RoutineSerializer
 from api.routine.serializers import RoutineCreateSerializer
+from api.routine.serializers import RoutineUpdateSerializer
 from model.routine.models import Routine
 
 @extend_schema_view(
@@ -23,5 +24,7 @@ class RoutineViewSet(mixins.CreateModelMixin,
     def get_serializer_class(self):
         if self.action == 'create':
             return RoutineCreateSerializer
+        if self.action == 'partial_update':
+            return RoutineUpdateSerializer
         
         return RoutineSerializer
