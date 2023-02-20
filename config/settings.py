@@ -1,6 +1,6 @@
-from pathlib import Path
-
 import environ
+from datetime import timedelta
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -151,4 +151,10 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Todo routine service API',
     'TITLE': 'Todo routine service server API docs',
     'VERSION': '1.0.0',
+}
+
+
+# drf-simplejwt definition
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
 }
