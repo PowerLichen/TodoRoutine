@@ -49,3 +49,20 @@ class RoutineCreateSerializer(serializers.ModelSerializer):
                 "status": "ROUTINE_CREATE_OK"
             }
         }
+
+
+class RoutineUpdateSerializer(RoutineCreateSerializer):
+    class Meta:
+        model = Routine
+        fields = ["routine_id", "title", "category", "goal", "is_alarm", "days"]
+    
+    def to_representation(self, instance):
+        return {
+            "data": {
+                "routine_id": instance.routine_id
+                },
+            "message": {
+                "msg": "The routine has been modified.",
+                "status": "ROUTINE_UPDATE_OK"
+            }
+        }
