@@ -41,13 +41,7 @@ class RoutineCreateSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         return {
-            "data": {
-                "routine_id": instance.routine_id
-                },
-            "message": {
-                "msg": "You have successfully created the routine.",
-                "status": "ROUTINE_CREATE_OK"
-            }
+            "routine_id": instance.routine_id
         }
 
 
@@ -77,11 +71,5 @@ class RoutineUpdateSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         return {
-            "data": {
-                "routine_id": instance.routine_id
-                },
-            "message": {
-                "msg": "The routine has been modified.",
-                "status": "ROUTINE_UPDATE_OK"
-            }
+            "routine_id": instance.routine_id
         }

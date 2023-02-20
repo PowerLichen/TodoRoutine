@@ -4,6 +4,7 @@ from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 
 from api.routine import schemas
+from api.routine.renderers import RoutineJSONRenderer
 from api.routine.serializers import RoutineSerializer
 from api.routine.serializers import RoutineCreateSerializer
 from api.routine.serializers import RoutineUpdateSerializer
@@ -20,6 +21,7 @@ class RoutineViewSet(mixins.CreateModelMixin,
                      mixins.ListModelMixin,
                      GenericViewSet):
     queryset = Routine.objects.all()
+    renderer_classes = [RoutineJSONRenderer]
     
     def get_serializer_class(self):
         if self.action == 'create':
@@ -28,3 +30,6 @@ class RoutineViewSet(mixins.CreateModelMixin,
             return RoutineUpdateSerializer
         
         return RoutineSerializer
+    
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)
