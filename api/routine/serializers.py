@@ -41,11 +41,35 @@ class RoutineCreateSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         return {
-            "data": {
-                "routine_id": instance.routine_id
-                },
-            "message": {
-                "msg": "You have successfully created the routine.",
-                "status": "ROUTINE_CREATE_OK"
-            }
+            "routine_id": instance.routine_id
+        }
+
+
+class RoutineUpdateSerializer(serializers.ModelSerializer):
+    days = serializers.MultipleChoiceField(choices=RoutineDay.WEEKDAY_CHOICES)
+    
+    class Meta:
+        model = Routine
+        fields = ["routine_id", "title", "category", "goal", "is_alarm", "days"]
+    
+    def _update_day_routine(self, instance, weekday_lst):
+        instance.routine_day_set.exclude(day__in=weekday_lst).delete()
+        
+        for weekday in weekday_lst:
+            instance.routine_day_set.get_or_create(day=weekday)
+        
+        instance.save()
+        
+    def update(self, instance, validated_data):
+        custom_data = validated_data
+        weekday_lst = custom_data.pop("days", None)
+        
+        if weekday_lst is not None:
+            self._update_day_routine(instance, weekday_lst)
+        
+        return super().update(instance, custom_data)
+    
+    def to_representation(self, instance):
+        return {
+            "routine_id": instance.routine_id
         }
