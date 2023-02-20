@@ -14,7 +14,8 @@ class Routine(DeletedAndTimeStampedModel):
     routine_id = models.BigAutoField(primary_key=True)
     account_id = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="routine_set"
     )
     title = models.CharField(max_length=150)
     category = models.CharField(max_length=8, choices=CATEGORY_CHOICES)
@@ -51,7 +52,11 @@ class RoutineDay(TimeStampedModel):
         ("SAT", "SAT")
     )
     day = models.CharField(max_length=3, choices=WEEKDAY_CHOICES)
-    routine_id = models.ForeignKey(Routine, on_delete=models.CASCADE)
+    routine_id = models.ForeignKey(
+        Routine,
+        on_delete=models.CASCADE,
+        related_name="routine_day_set"
+    )
     
     class Meta:
         db_table = "routine_day"
