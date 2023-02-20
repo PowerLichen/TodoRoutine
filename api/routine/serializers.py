@@ -24,17 +24,20 @@ class RoutineCreateSerializer(serializers.Serializer):
     is_alarm = serializers.BooleanField(default=False)
     days = serializers.MultipleChoiceField(choices=RoutineDay.WEEKDAY_CHOICES)
     
+    def _create_day_routine(self, routine, weekday_lst):
+        for weekday in weekday_lst:
+            routine.routine_day_set.create(
+                day=weekday
+            )
+    
     def create(self, validated_data):
         custom_data = validated_data
-        week_day = custom_data.pop("days")
+        weekday_lst = custom_data.pop("days")
         
         instance_routine = Routine.objects.create(**custom_data)
-        for item in week_day:
-            RoutineDay.objects.create(
-                day=item,
-                routine_id=instance_routine
-            )
+        self._create_day_routine(instance_routine, weekday_lst)
         
+        instance_routine.save()
         return instance_routine
     
     def to_representation(self, instance):
