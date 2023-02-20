@@ -12,17 +12,16 @@ class RoutineSerializer(serializers.ModelSerializer):
         fields = ["routine_id", "account_id", "title", "category", "goal", "is_alarm"]
 
 
-class RoutineCreateSerializer(serializers.Serializer):
-    account_id = serializers.PrimaryKeyRelatedField(
-        required=False,
-        queryset=get_user_model().objects.all(),
+class RoutineCreateSerializer(serializers.ModelSerializer):
+    account_id = serializers.HiddenField(
         default=serializers.CurrentUserDefault(),
-        )
-    title = serializers.CharField()
-    category = serializers.ChoiceField(choices=Routine.CATEGORY_CHOICES)
-    goal = serializers.CharField()
-    is_alarm = serializers.BooleanField(default=False)
+    )
     days = serializers.MultipleChoiceField(choices=RoutineDay.WEEKDAY_CHOICES)
+    
+    class Meta:
+        model = Routine
+        fields = ["account_id", "title", "category", "goal", "is_alarm", "days"]
+        
     
     def _create_day_routine(self, routine, weekday_lst):
         for weekday in weekday_lst:
