@@ -12,6 +12,7 @@ from model.routine.models import Routine
 
 @extend_schema_view(
     create=schemas.SCHEMA_ROUTINE_CREATE,
+    partial_update=schemas.SCHEMA_ROUTINE_UPDATE,
 )
 @extend_schema(tags=['routine'])
 class RoutineViewSet(mixins.CreateModelMixin,
