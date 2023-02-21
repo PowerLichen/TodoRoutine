@@ -16,6 +16,10 @@ class RoutineJSONRenderer(JSONRenderer):
             "msg": "Routine lookup was successful.",
             "status": "ROUTINE_DETAIL_OK"
         },
+        "list": {
+            "msg": "Routine lookup was successful.",
+            "status": "ROUTINE_LIST_OK"
+        }
     }
     
     def render(self, data, accepted_media_type=None, renderer_context=None):
