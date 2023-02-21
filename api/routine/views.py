@@ -6,6 +6,7 @@ from django.db.models import FilteredRelation
 from drf_spectacular.utils import extend_schema
 from drf_spectacular.utils import extend_schema_view
 from rest_framework import mixins
+from rest_framework.exceptions import ParseError
 from rest_framework.viewsets import GenericViewSet
 
 from api.routine import schemas
@@ -60,6 +61,9 @@ class RoutineViewSet(mixins.CreateModelMixin,
     def get_queryset(self):
         if self.action == "list":
             date = self.request.data.get("today", None)
+            if date is None:
+                raise ParseError
+            
             return self._queryset_filter_by_date(date)
             
         return super().get_queryset()
