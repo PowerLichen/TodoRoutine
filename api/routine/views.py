@@ -19,11 +19,11 @@ from model.routine.models import Routine
 from model.routine.models import RoutineDay
 
 
-
 @extend_schema_view(
     create=schemas.SCHEMA_ROUTINE_CREATE,
     partial_update=schemas.SCHEMA_ROUTINE_UPDATE,
     retrieve=schemas.SCHEMA_ROUTINE_RETRIEVE,
+    list=schemas.SCHEMA_ROUTINE_LIST,
 )
 @extend_schema(tags=["routine"])
 class RoutineViewSet(mixins.CreateModelMixin,
@@ -59,7 +59,7 @@ class RoutineViewSet(mixins.CreateModelMixin,
     
     def get_queryset(self):
         if self.action == "list":
-            date = self.request.data["today"]
+            date = self.request.data.get("today", None)
             return self._queryset_filter_by_date(date)
             
         return super().get_queryset()

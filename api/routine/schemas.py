@@ -76,3 +76,36 @@ SCHEMA_ROUTINE_RETRIEVE = extend_schema(
         )
     ]
 )
+
+SCHEMA_ROUTINE_LIST = extend_schema(
+    summary="Routine 목록 조회",
+    examples=[
+        OpenApiExample(
+            name="example request",
+            request_only=True,
+            value={
+                "today" : "2022-02-14"
+            }
+        ),
+        OpenApiExample(
+            name="example response",
+            response_only=True,
+            description="루틴 목록 조회 성공",
+            value={
+                "data":  [{
+                    "goal" : "Solve 2 pages of math problems every day",
+                    "id" : 1,
+                    "result" : "NOT",
+                    "title" : "solve math problems"
+                    },
+                    {
+                    "goal" : "Solve 2 pages of english problems every day",
+                    "id" : 1,
+                    "result" : "DONE",
+                    "title": "solve english problems"
+                }],
+                "message": RoutineJSONRenderer.routine_msgs["list"]
+            }
+        )
+    ]
+)
