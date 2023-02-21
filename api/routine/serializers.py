@@ -96,3 +96,17 @@ class RoutineRetrieveSerializer(serializers.ModelSerializer):
         if status is not None:
             return status.result
         return "NOT"
+
+
+class RoutineListSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='account_id', read_only=True)
+    result = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Routine
+        fields = ["goal", "id", "result", "title"]
+
+    def get_result(self, obj):
+        if obj["result"] is None:
+            return "NOT"        
+        return obj["result"]
