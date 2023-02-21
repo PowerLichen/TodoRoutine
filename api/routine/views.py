@@ -1,3 +1,8 @@
+import datetime
+
+from django.db.models import F
+from django.db.models import Q
+from django.db.models import FilteredRelation
 from drf_spectacular.utils import extend_schema
 from drf_spectacular.utils import extend_schema_view
 from rest_framework import mixins
@@ -9,14 +14,18 @@ from api.routine.serializers import RoutineSerializer
 from api.routine.serializers import RoutineCreateSerializer
 from api.routine.serializers import RoutineUpdateSerializer
 from api.routine.serializers import RoutineRetrieveSerializer
+from api.routine.serializers import RoutineListSerializer
 from model.routine.models import Routine
+from model.routine.models import RoutineDay
+
+
 
 @extend_schema_view(
     create=schemas.SCHEMA_ROUTINE_CREATE,
     partial_update=schemas.SCHEMA_ROUTINE_UPDATE,
     retrieve=schemas.SCHEMA_ROUTINE_RETRIEVE,
 )
-@extend_schema(tags=['routine'])
+@extend_schema(tags=["routine"])
 class RoutineViewSet(mixins.CreateModelMixin,
                      mixins.RetrieveModelMixin,
                      mixins.UpdateModelMixin,
@@ -26,11 +35,43 @@ class RoutineViewSet(mixins.CreateModelMixin,
     queryset = Routine.objects.all()
     renderer_classes = [RoutineJSONRenderer]
     
+    def _queryset_filter_by_date(self, date):
+        today = datetime.date.fromisoformat(date)
+        cur_weekday = RoutineDay.WEEKDAY_CHOICES[today.weekday()][0]
+        
+        queryset = (
+            super()
+            .get_queryset()
+            .annotate(
+                today_routine_result=FilteredRelation(
+                    "routine_result_set",
+                    condition=Q(routine_result_set__created_at__date=today)
+                )
+            )
+            .filter(routine_day_set__day=cur_weekday)
+            .values(
+                "routine_id","goal", "account_id", "title",
+                result=F("today_routine_result__result")
+            )
+        )
+            
+        return queryset
+    
+    def get_queryset(self):
+        if self.action == "list":
+            date = self.request.data["today"]
+            return self._queryset_filter_by_date(date)
+            
+        return super().get_queryset()
+    
     def get_serializer_class(self):
-        if self.action == 'create':
+        if self.action == "create":
             return RoutineCreateSerializer
-        if self.action == 'partial_update':
+        if self.action == "partial_update":
             return RoutineUpdateSerializer
         if self.action == "retrieve":
             return RoutineRetrieveSerializer
+        if self.action == "list":
+            return RoutineListSerializer
+        
         return RoutineSerializer
