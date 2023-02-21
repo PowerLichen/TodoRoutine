@@ -8,6 +8,7 @@ from api.routine.renderers import RoutineJSONRenderer
 from api.routine.serializers import RoutineSerializer
 from api.routine.serializers import RoutineCreateSerializer
 from api.routine.serializers import RoutineUpdateSerializer
+from api.routine.serializers import RoutineRetrieveSerializer
 from model.routine.models import Routine
 
 @extend_schema_view(
@@ -29,8 +30,6 @@ class RoutineViewSet(mixins.CreateModelMixin,
             return RoutineCreateSerializer
         if self.action == 'partial_update':
             return RoutineUpdateSerializer
-        
+        if self.action == "retrieve":
+            return RoutineRetrieveSerializer
         return RoutineSerializer
-    
-    def destroy(self, request, *args, **kwargs):
-        return super().destroy(request, *args, **kwargs)
