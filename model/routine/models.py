@@ -47,13 +47,13 @@ class RoutineResult(DeletedAndTimeStampedModel):
         
 class RoutineDay(TimeStampedModel):
     WEEKDAY_CHOICES = (
-        ("SUN", "SUN"),
         ("MON", "MON"),
         ("TUE", "TUE"),
         ("WED", "WED"),
         ("THU", "THU"),
         ("FRI", "FRI"),
-        ("SAT", "SAT")
+        ("SAT", "SAT"),
+        ("SUN", "SUN"),
     )
     day = models.CharField(max_length=3, choices=WEEKDAY_CHOICES)
     routine = models.ForeignKey(
