@@ -12,7 +12,7 @@ class Routine(DeletedAndTimeStampedModel):
     )
     
     routine_id = models.BigAutoField(primary_key=True)
-    account_id = models.ForeignKey(
+    account = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="routine_set"
@@ -34,7 +34,11 @@ class RoutineResult(DeletedAndTimeStampedModel):
     )
        
     routine_result_id = models.BigAutoField(primary_key=True)
-    routine_id = models.ForeignKey(Routine, on_delete=models.CASCADE)
+    routine = models.ForeignKey(
+        Routine,
+        on_delete=models.CASCADE,
+        related_name="routine_result_set"
+    )
     result = models.CharField(max_length=4, choices=RESULT_CHOICES)
     
     class Meta:
@@ -52,7 +56,7 @@ class RoutineDay(TimeStampedModel):
         ("SAT", "SAT")
     )
     day = models.CharField(max_length=3, choices=WEEKDAY_CHOICES)
-    routine_id = models.ForeignKey(
+    routine = models.ForeignKey(
         Routine,
         on_delete=models.CASCADE,
         related_name="routine_day_set"
@@ -60,3 +64,9 @@ class RoutineDay(TimeStampedModel):
     
     class Meta:
         db_table = "routine_day"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["day", "routine_id"],
+                name="routine-day unique key"
+            )            
+        ]

@@ -13,14 +13,14 @@ class RoutineSerializer(serializers.ModelSerializer):
 
 
 class RoutineCreateSerializer(serializers.ModelSerializer):
-    account_id = serializers.HiddenField(
+    account = serializers.HiddenField(
         default=serializers.CurrentUserDefault(),
     )
     days = serializers.MultipleChoiceField(choices=RoutineDay.WEEKDAY_CHOICES)
     
     class Meta:
         model = Routine
-        fields = ["account_id", "title", "category", "goal", "is_alarm", "days"]
+        fields = ["account", "title", "category", "goal", "is_alarm", "days"]
         
     
     def _create_day_routine(self, routine, weekday_lst):
