@@ -73,3 +73,26 @@ class RoutineUpdateSerializer(serializers.ModelSerializer):
         return {
             "routine_id": instance.routine_id
         }
+
+
+class RoutineRetrieveSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(source='account_id', read_only=True)
+    days = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        source="routine_day_set",
+        slug_field="day"
+    )
+    result = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Routine
+        fields = ["goal", "id", "result", "title", "days"]
+
+    def get_result(self, obj):
+        status = obj.routine_result_set \
+            .order_by("-created_at") \
+            .first()
+        if status is not None:
+            return status.result
+        return "NOT"

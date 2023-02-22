@@ -1,4 +1,4 @@
-from drf_spectacular.utils import extend_schema, OpenApiExample
+from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiParameter
 
 from api.routine.renderers import RoutineJSONRenderer
 
@@ -51,6 +51,27 @@ SCHEMA_ROUTINE_UPDATE = extend_schema(
                     "routine_id": 1
                 },
                 "message": RoutineJSONRenderer.routine_msgs["partial_update"]
+            }
+        )
+    ]
+)
+
+SCHEMA_ROUTINE_RETRIEVE = extend_schema(
+    summary="Routine 단건 조회",
+    examples=[
+        OpenApiExample(
+            name="example response",
+            response_only=True,
+            description="루틴 단건 조회 성공",
+            value={
+                "data": {
+                    "goal" : "Solve 2 pages of math problems every day",
+                    "id" : 1,
+                    "result" : "NOT",
+                    "title" : "solve math problems",
+                    "days": ["MON", "WED", "FRI"]
+                },
+                "message": RoutineJSONRenderer.routine_msgs["retrieve"]
             }
         )
     ]
