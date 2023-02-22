@@ -40,3 +40,4 @@ class UserCreateSerializer(serializers.ModelSerializer):
                 f"This password must contain at least 1 numeric character."
             )
         
+        return value
