@@ -6,6 +6,7 @@ from django.db.models import FilteredRelation
 from drf_spectacular.utils import extend_schema
 from drf_spectacular.utils import extend_schema_view
 from rest_framework import mixins
+from rest_framework.decorators import action
 from rest_framework.exceptions import ParseError
 from rest_framework.viewsets import GenericViewSet
 
@@ -17,6 +18,7 @@ from api.routine.serializers import RoutineUpdateSerializer
 from api.routine.serializers import RoutineRetrieveSerializer
 from api.routine.serializers import RoutineListSerializer
 from api.routine.serializers import RoutineDestroySerializer
+from api.routine.serializers import RoutineResultUpdateSerializer
 from model.routine.models import Routine
 from model.routine.models import RoutineDay
 
@@ -27,6 +29,7 @@ from model.routine.models import RoutineDay
     retrieve=schemas.SCHEMA_ROUTINE_RETRIEVE,
     list=schemas.SCHEMA_ROUTINE_LIST,
     destroy=schemas.SCHEMA_ROUTINE_DESTROY,
+    result=schemas.SCHEMA_ROUTINE_RESULT,
 )
 @extend_schema(tags=["routine"])
 class RoutineViewSet(mixins.CreateModelMixin,
@@ -82,8 +85,13 @@ class RoutineViewSet(mixins.CreateModelMixin,
             return RoutineListSerializer
         if self.action == "destroy":
             return RoutineDestroySerializer
-        
+        if self.action == "result":
+            return RoutineResultUpdateSerializer
         return RoutineSerializer
 
     def destroy(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+    
+    @action(detail=True, methods=['post'], url_path='result')
+    def result(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
