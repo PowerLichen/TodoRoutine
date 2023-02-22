@@ -1,5 +1,8 @@
-from django.contrib.auth import get_user_model
+from datetime import timedelta
+
+from django.utils import timezone
 from rest_framework import serializers
+from rest_framework.exceptions import NotFound
 
 from model.routine.models import Routine
 from model.routine.models import RoutineDay
@@ -88,9 +91,28 @@ class RoutineRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Routine
         fields = ["goal", "id", "result", "title", "days"]
+        
+    def _get_lastest_result_date(self, obj):
+        result = None
+        today = timezone.localdate()
+        today_weekday = today.weekday()
+        target_weekday = [dayset.day for dayset in obj.routine_day_set.all()]
+        for i in range(7):
+            cur_weekday = (today_weekday - i) % 7
+            if RoutineDay.WEEKDAY_CHOICES[cur_weekday][0] in target_weekday:
+                result = i
+                break
+        
+        return result
 
     def get_result(self, obj):
+        target_daydiff = self._get_lastest_result_date(obj)
+        if target_daydiff is None:
+            raise NotFound()
+        
+        target_date = timezone.localdate() - timedelta(days=target_daydiff)
         status = obj.routine_result_set \
+            .filter(created_at__date=target_date) \
             .order_by("-created_at") \
             .first()
         if status is not None:
