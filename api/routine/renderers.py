@@ -40,5 +40,6 @@ class RoutineJSONRenderer(JSONRenderer):
                 "data": data,
                 "message": self.routine_msgs.get(current_action, None)
             }
-        
+            
+        renderer_context["response"].data = custom_data
         return super().render(custom_data, accepted_media_type, renderer_context)
