@@ -41,13 +41,12 @@ class RoutineViewSet(mixins.CreateModelMixin,
     queryset = Routine.active_objects.all()
     renderer_classes = [RoutineJSONRenderer]
     
-    def _queryset_filter_by_date(self, date):
+    def _queryset_filter_by_date(self, queryset, date):
         today = datetime.date.fromisoformat(date)
         cur_weekday = RoutineDay.WEEKDAY_CHOICES[today.weekday()][0]
         
         queryset = (
-            super()
-            .get_queryset()
+            queryset
             .annotate(
                 today_routine_result=FilteredRelation(
                     "routine_result_set",
@@ -55,6 +54,7 @@ class RoutineViewSet(mixins.CreateModelMixin,
                 )
             )
             .filter(routine_day_set__day=cur_weekday)
+            .filter(created_at__date__lte=today)
             .values(
                 "routine_id","goal", "account_id", "title",
                 result=F("today_routine_result__result")
@@ -70,7 +70,7 @@ class RoutineViewSet(mixins.CreateModelMixin,
             if date is None:
                 raise ParseError
             
-            queryset = self._queryset_filter_by_date(date)
+            queryset = self._queryset_filter_by_date(queryset, date)
             
         return queryset
     
