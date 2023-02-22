@@ -1,6 +1,9 @@
-from drf_spectacular.utils import extend_schema, OpenApiExample, OpenApiParameter
+from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiExample
+from drf_spectacular.utils import OpenApiResponse
 
 from api.routine.renderers import RoutineJSONRenderer
+from api.routine.serializers import RoutineDestroySerializer
 
 SCHEMA_ROUTINE_CREATE = extend_schema(
     summary="Routine 생성",
@@ -105,6 +108,24 @@ SCHEMA_ROUTINE_LIST = extend_schema(
                     "title": "solve english problems"
                 }],
                 "message": RoutineJSONRenderer.routine_msgs["list"]
+            }
+        )
+    ]
+)
+
+SCHEMA_ROUTINE_DESTROY = extend_schema(
+    summary="Routine 삭제",
+    responses={200: OpenApiResponse(response=RoutineDestroySerializer)},
+    examples=[
+        OpenApiExample(
+            name="example response",
+            response_only=True,
+            description="루틴 삭제 성공",
+            value={
+                "data": {
+                    "routine_id": 1
+                },
+                "message": RoutineJSONRenderer.routine_msgs["destroy"]
             }
         )
     ]

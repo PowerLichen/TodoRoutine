@@ -19,6 +19,10 @@ class RoutineJSONRenderer(JSONRenderer):
         "list": {
             "msg": "Routine lookup was successful.",
             "status": "ROUTINE_LIST_OK"
+        },
+        "destroy": {
+            "msg": "The routine has been deleted.",
+            "status": "ROUTINE_DELETE_OK"
         }
     }
     

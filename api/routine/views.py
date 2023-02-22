@@ -16,6 +16,7 @@ from api.routine.serializers import RoutineCreateSerializer
 from api.routine.serializers import RoutineUpdateSerializer
 from api.routine.serializers import RoutineRetrieveSerializer
 from api.routine.serializers import RoutineListSerializer
+from api.routine.serializers import RoutineDestroySerializer
 from model.routine.models import Routine
 from model.routine.models import RoutineDay
 
@@ -25,6 +26,7 @@ from model.routine.models import RoutineDay
     partial_update=schemas.SCHEMA_ROUTINE_UPDATE,
     retrieve=schemas.SCHEMA_ROUTINE_RETRIEVE,
     list=schemas.SCHEMA_ROUTINE_LIST,
+    destroy=schemas.SCHEMA_ROUTINE_DESTROY,
 )
 @extend_schema(tags=["routine"])
 class RoutineViewSet(mixins.CreateModelMixin,
@@ -77,5 +79,10 @@ class RoutineViewSet(mixins.CreateModelMixin,
             return RoutineRetrieveSerializer
         if self.action == "list":
             return RoutineListSerializer
+        if self.action == "destroy":
+            return RoutineDestroySerializer
         
         return RoutineSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
