@@ -7,6 +7,10 @@ UserModel = get_user_model()
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     
+    class Meta:
+        model = UserModel
+        fields = ["email", "password", "username"]
+    
     def create(self, validated_data):
         user = UserModel.objects.create_user(
             email=validated_data["email"],
@@ -15,8 +19,24 @@ class UserCreateSerializer(serializers.ModelSerializer):
         )
         
         return user
-    
-    class Meta:
-        model = UserModel
-        fields = ["email", "password", "username"]
+
+    def validate_password(self, value):
+        min_length = 8
+        if len(value) < 8:
+            raise serializers.ValidationError(
+                f"This password is too short. It must contain at least {min_length} character."
+            )
+            
+        symbols = "~!@#$%^&*()_+{}\":;'[]"
+        symbol_in_pwd = [char for char in value if char in symbols]
+        if len(symbol_in_pwd) == 0:
+            raise serializers.ValidationError(
+                f"This password must contain at least 1 symbols. (symbols: {symbols})"
+            )
+        
+        number_in_pwd = [char for char in value if char.isdecimal()]
+        if len(number_in_pwd) == 0:
+            raise serializers.ValidationError(
+                f"This password must contain at least 1 numeric character."
+            )
         
