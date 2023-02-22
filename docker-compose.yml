@@ -1,0 +1,12 @@
+version: '3.10'
+services:
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=userpassword
+      - POSTGRES_DB=project
+      - TZ=Asia/Seoul
