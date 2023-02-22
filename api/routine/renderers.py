@@ -1,5 +1,5 @@
+from rest_framework import status
 from rest_framework.renderers import JSONRenderer
-
 
 
 class RoutineJSONRenderer(JSONRenderer):
@@ -15,9 +15,12 @@ class RoutineJSONRenderer(JSONRenderer):
     }
     
     def render(self, data, accepted_media_type=None, renderer_context=None):
-        current_action = renderer_context['view'].action
-        response_data = {
-            "data": data,
-            "message": self.routine_msgs.get(current_action, None)
-        }
-        return super().render(response_data, accepted_media_type, renderer_context)
+        status_code = renderer_context["response"].status_code
+        custom_data = data
+        if status.is_success(status_code):
+            current_action = renderer_context['view'].action
+            custom_data = {
+                "data": data,
+                "message": self.routine_msgs.get(current_action, None)
+            }
+        return super().render(custom_data, accepted_media_type, renderer_context)
