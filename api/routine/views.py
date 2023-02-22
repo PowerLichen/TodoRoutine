@@ -16,6 +16,7 @@ from api.routine.serializers import RoutineCreateSerializer
 from api.routine.serializers import RoutineUpdateSerializer
 from api.routine.serializers import RoutineRetrieveSerializer
 from api.routine.serializers import RoutineListSerializer
+from api.routine.serializers import RoutineDestroySerializer
 from model.routine.models import Routine
 from model.routine.models import RoutineDay
 
@@ -77,5 +78,10 @@ class RoutineViewSet(mixins.CreateModelMixin,
             return RoutineRetrieveSerializer
         if self.action == "list":
             return RoutineListSerializer
+        if self.action == "destroy":
+            return RoutineDestroySerializer
         
         return RoutineSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)

@@ -110,3 +110,18 @@ class RoutineListSerializer(serializers.ModelSerializer):
         if obj["result"] is None:
             return "NOT"        
         return obj["result"]
+
+
+class RoutineDestroySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Routine
+        fields = ["routine_id"]
+    
+    def update(self, instance, validated_data):
+        for item in instance.routine_result_set.all():
+            setattr(item, "is_deleted", True)
+            item.save()
+            
+        setattr(instance, "is_deleted", True)
+        instance.save()  
+        return instance
