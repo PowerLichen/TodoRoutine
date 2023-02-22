@@ -130,3 +130,28 @@ SCHEMA_ROUTINE_DESTROY = extend_schema(
         )
     ]
 )
+
+SCHEMA_ROUTINE_RESULT = extend_schema(
+     summary="Routine 결과 업데이트",
+     examples=[
+        OpenApiExample(
+            name="example request",
+            request_only=True,
+            value={
+                "today" : "2023-02-14",
+                "result" : "DONE"
+            }
+        ),
+        OpenApiExample(
+            name="example response",
+            response_only=True,
+            description="루틴 결과 수정 성공",
+            value={
+                "data":  {
+                    "routine_result_id": 1
+                },
+                "message": RoutineJSONRenderer.routine_msgs["result"]
+            }
+        )
+    ]
+)
