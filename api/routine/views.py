@@ -26,6 +26,7 @@ from model.routine.models import RoutineDay
     partial_update=schemas.SCHEMA_ROUTINE_UPDATE,
     retrieve=schemas.SCHEMA_ROUTINE_RETRIEVE,
     list=schemas.SCHEMA_ROUTINE_LIST,
+    destroy=schemas.SCHEMA_ROUTINE_DESTROY,
 )
 @extend_schema(tags=["routine"])
 class RoutineViewSet(mixins.CreateModelMixin,
