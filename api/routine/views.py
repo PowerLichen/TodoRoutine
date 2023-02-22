@@ -35,7 +35,7 @@ class RoutineViewSet(mixins.CreateModelMixin,
                      mixins.DestroyModelMixin,
                      mixins.ListModelMixin,
                      GenericViewSet):
-    queryset = Routine.objects.all()
+    queryset = Routine.active_objects.all()
     renderer_classes = [RoutineJSONRenderer]
     
     def _queryset_filter_by_date(self, date):
@@ -61,14 +61,15 @@ class RoutineViewSet(mixins.CreateModelMixin,
         return queryset
     
     def get_queryset(self):
+        queryset = super().get_queryset().filter(account=self.request.user)
         if self.action == "list":
             date = self.request.data.get("today", None)
             if date is None:
                 raise ParseError
             
-            return self._queryset_filter_by_date(date)
+            queryset = self._queryset_filter_by_date(date)
             
-        return super().get_queryset()
+        return queryset
     
     def get_serializer_class(self):
         if self.action == "create":
