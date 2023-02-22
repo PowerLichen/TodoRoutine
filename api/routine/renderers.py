@@ -23,6 +23,10 @@ class RoutineJSONRenderer(JSONRenderer):
         "destroy": {
             "msg": "The routine has been deleted.",
             "status": "ROUTINE_DELETE_OK"
+        },
+        "result": {
+            "msg": "The routine result has been modified.",
+            "status": "ROUTINE_RESULT_UPDATE_OK"
         }
     }
     
