@@ -12,6 +12,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from api.routine import schemas
 from api.routine.renderers import RoutineJSONRenderer
+from api.routine.serializers import DateSerializer
 from api.routine.serializers import RoutineSerializer
 from api.routine.serializers import RoutineCreateSerializer
 from api.routine.serializers import RoutineUpdateSerializer
@@ -42,7 +43,7 @@ class RoutineViewSet(mixins.CreateModelMixin,
     renderer_classes = [RoutineJSONRenderer]
     
     def _queryset_filter_by_date(self, queryset, date):
-        today = datetime.date.fromisoformat(date)
+        today = date
         cur_weekday = RoutineDay.WEEKDAY_CHOICES[today.weekday()][0]
         
         queryset = (
@@ -63,15 +64,24 @@ class RoutineViewSet(mixins.CreateModelMixin,
             
         return queryset
     
+    def _validation_date_param(self):
+        date = self.request.query_params.get("today", None)
+        if date is None:
+            raise ParseError
+        
+        data = {
+            "today": date
+        }
+        serializer = DateSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        return serializer.validated_data["today"]
+        
+    
     def get_queryset(self):
         queryset = super().get_queryset().filter(account=self.request.user)
         if self.action == "list":
-            date = self.request.data.get("today", None)
-            if date is None:
-                raise ParseError
-            
+            date = self._validation_date_param()
             queryset = self._queryset_filter_by_date(queryset, date)
-            
         return queryset
     
     def get_serializer_class(self):
