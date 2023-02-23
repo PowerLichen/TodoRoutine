@@ -5,8 +5,16 @@ services:
     container_name: postgres
     ports:
       - "5432:5432"
-    environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=userpassword
-      - POSTGRES_DB=project
-      - TZ=Asia/Seoul
+    env_file: ./config/.env
+  server-django:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres-db
+    links:
+      - postgres-db
+    command: /bin/bash -c "
+        python manage.py migrate &&
+        python manage.py runserver 0.0.0.0:8000
+      "
