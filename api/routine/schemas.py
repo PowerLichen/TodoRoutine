@@ -1,5 +1,7 @@
+import datetime
 from drf_spectacular.utils import extend_schema
 from drf_spectacular.utils import OpenApiExample
+from drf_spectacular.utils import OpenApiParameter
 from drf_spectacular.utils import OpenApiResponse
 
 from api.routine.renderers import RoutineJSONRenderer
@@ -82,6 +84,13 @@ SCHEMA_ROUTINE_RETRIEVE = extend_schema(
 
 SCHEMA_ROUTINE_LIST = extend_schema(
     summary="Routine 목록 조회",
+    parameters=[
+        OpenApiParameter(
+            name="today",
+            type=datetime.date,
+            required=True
+        )
+    ],
     examples=[
         OpenApiExample(
             name="example request",
