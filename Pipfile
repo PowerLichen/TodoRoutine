@@ -12,6 +12,8 @@ djangorestframework-simplejwt = "5.2.2"
 
 [dev-packages]
 psycopg2-binary = "2.9.5"
+coverage = "7.2.0"
+freezegun = "1.2.2"
 
 [requires]
 python_version = "3.9"
