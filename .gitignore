@@ -10,3 +10,6 @@ media
 
 # env file
 .env
+
+# coverage file
+.coverage
