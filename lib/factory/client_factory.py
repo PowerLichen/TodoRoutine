@@ -11,16 +11,15 @@ class ClientData:
             email=email
         )
         self.email = email
-        self.client = self._get_client(self.user)
+        self.set_client_auth()
         
-    def _get_client(self, user):
-        refresh = RefreshToken.for_user(user=user)
+    def set_client_auth(self):
+        refresh = RefreshToken.for_user(user=self.user)
         access = refresh.access_token
-        client = APIClient()
-        client.credentials(
+        self.client = APIClient()
+        self.client.credentials(
             HTTP_AUTHORIZATION=f"Bearer {access}"
-        )        
-        return client
+        )
 
 
 class ClientDataFactory(factory.Factory):
