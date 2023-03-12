@@ -11,7 +11,7 @@ class RoutineCreateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.auth_client = ClientDataFactory()
-        cls.url = reverse("notice-list")
+        cls.url = reverse("routine-list")
         cls.success_msg = RoutineJSONRenderer.routine_msgs["create"]
         
     def setUp(self):
