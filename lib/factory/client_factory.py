@@ -7,11 +7,11 @@ from lib.factory.user_factory import UserFactory
 
 class ClientData:
     def __init__(self, email):
-        user = UserFactory(
+        self.user = UserFactory(
             email=email
         )
         self.email = email
-        self.client = self._get_client(user)
+        self.client = self._get_client(self.user)
         
     def _get_client(self, user):
         refresh = RefreshToken.for_user(user=user)
