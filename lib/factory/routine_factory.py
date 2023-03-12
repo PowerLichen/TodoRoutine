@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from model.user.models import User
 from model.routine.models import Routine
 from model.routine.models import RoutineDay
+from model.routine.models import RoutineResult
 
 UserModel = get_user_model()
 
@@ -21,7 +22,8 @@ class RoutineFactory(factory.django.DjangoModelFactory):
     )
     goal = factory.Faker("sentence")
     is_alarm = True
-    
+
+
 class RoutineDayFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = RoutineDay
@@ -29,6 +31,17 @@ class RoutineDayFactory(factory.django.DjangoModelFactory):
     
     day = factory.fuzzy.FuzzyChoice(
         RoutineDay.WEEKDAY_CHOICES,
+        getter=lambda c: c[0]
+    )
+    routine = factory.Iterator(Routine.objects.all())
+
+
+class RoutineResultFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = RoutineResult
+    
+    result = factory.fuzzy.FuzzyChoice(
+        RoutineResult.RESULT_CHOICES,
         getter=lambda c: c[0]
     )
     routine = factory.Iterator(Routine.objects.all())
