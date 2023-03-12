@@ -19,7 +19,7 @@ class RoutineCreateSerializer(serializers.ModelSerializer):
     account = serializers.HiddenField(
         default=serializers.CurrentUserDefault(),
     )
-    days = serializers.MultipleChoiceField(choices=RoutineDay.WEEKDAY_CHOICES)
+    days = serializers.MultipleChoiceField(choices=RoutineDay.WEEKDAY_CHOICES, allow_empty=False)
     
     class Meta:
         model = Routine
