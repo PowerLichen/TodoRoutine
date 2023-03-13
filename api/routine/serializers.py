@@ -1,3 +1,4 @@
+from datetime import datetime
 from datetime import timedelta
 
 from django.utils import timezone
@@ -171,9 +172,13 @@ class RoutineResultUpdateSerializer(serializers.Serializer):
                 "result": validated_data["result"]
             }
         )
-        
+        current = datetime.combine(
+            date=validated_data["today"],
+            time=datetime.min.time(),
+            tzinfo=timezone.get_default_timezone()
+        )
         if created == True:
-            obj.created_at = validated_data["today"]
+            obj.created_at = current
             
         obj.save()
         return obj
