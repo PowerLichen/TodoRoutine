@@ -1,4 +1,5 @@
 from freezegun import freeze_time
+
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
@@ -32,7 +33,7 @@ class RoutineResultUpdateTestCase(APITestCase):
         self.auth_client.set_client_auth()
         self.data = {
             "today": "2023-02-20",
-            "result": "DONE"
+            "result": "TRY"
         }
         
     def test_routine_result_update_by_anonymous(self):
@@ -91,3 +92,28 @@ class RoutineResultUpdateTestCase(APITestCase):
             data=self.data
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        
+    def test_routine_result_update_twice(self):
+        """루틴 결과 수정 2회 테스트"""
+        res = self.auth_client.client.post(
+                self.url,
+                data=self.data
+            )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        instance = self.routine.routine_result_set.filter(created_at__date=self.data["today"]).first()
+        self.assertEqual(instance.result, self.data["result"])
+        
+        self.data["result"] = "DONE"
+        res = self.auth_client.client.post(
+            self.url,
+            data=self.data
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+            
+        instance = self.routine.routine_result_set.filter(created_at__date=self.data["today"])
+        self.assertEqual(len(instance), 1)
+        self.assertEqual(instance[0].result, self.data["result"])
+            
+        
+        
