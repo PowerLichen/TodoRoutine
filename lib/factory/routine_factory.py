@@ -6,6 +6,9 @@ from model.user.models import User
 from model.routine.models import Routine
 from model.routine.models import RoutineDay
 from model.routine.models import RoutineResult
+from model.routine.choices import CATEGORY_CHOICES
+from model.routine.choices import RESULT_CHOICES
+from model.routine.choices import WEEKDAY_CHOICES
 
 UserModel = get_user_model()
 
@@ -17,7 +20,7 @@ class RoutineFactory(factory.django.DjangoModelFactory):
     account = factory.Iterator(User.objects.all())
     title = factory.fuzzy.FuzzyText(length=20)
     category = factory.fuzzy.FuzzyChoice(
-        Routine.CATEGORY_CHOICES,
+        CATEGORY_CHOICES,
         getter=lambda c: c[0]
     )
     goal = factory.Faker("sentence")
@@ -30,7 +33,7 @@ class RoutineDayFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ('day', 'routine')
     
     day = factory.fuzzy.FuzzyChoice(
-        RoutineDay.WEEKDAY_CHOICES,
+        WEEKDAY_CHOICES,
         getter=lambda c: c[0]
     )
     routine = factory.Iterator(Routine.objects.all())
@@ -41,7 +44,7 @@ class RoutineResultFactory(factory.django.DjangoModelFactory):
         model = RoutineResult
     
     result = factory.fuzzy.FuzzyChoice(
-        RoutineResult.RESULT_CHOICES,
+        RESULT_CHOICES,
         getter=lambda c: c[0]
     )
     routine = factory.Iterator(Routine.objects.all())

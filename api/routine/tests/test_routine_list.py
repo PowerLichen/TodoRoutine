@@ -8,7 +8,7 @@ from lib.factory.client_factory import ClientDataFactory
 from lib.factory.routine_factory import RoutineFactory
 from lib.factory.routine_factory import RoutineDayFactory
 from lib.factory.routine_factory import RoutineResultFactory
-from model.routine.models import RoutineResult
+from model.routine.choices import RESULT_CHOICES
 
 
 class RoutineListTestCase(APITestCase):
@@ -17,7 +17,7 @@ class RoutineListTestCase(APITestCase):
     def setUpTestData(cls):
         cls.auth_client = ClientDataFactory()
         
-        cls.routine_length = 3
+        cls.routine_length = 20
         cls.routines = RoutineFactory.create_batch(
             cls.routine_length,
             account=cls.auth_client.user
@@ -39,14 +39,15 @@ class RoutineListTestCase(APITestCase):
         target_date = "2023-02-22"
         with freeze_time(target_date):
             self.auth_client.set_client_auth()
-            RoutineResultFactory(
-                result=RoutineResult.RESULT_CHOICES[1][0],
-                routine=self.routines[1]
-            )
-            RoutineResultFactory(
-                result=RoutineResult.RESULT_CHOICES[2][0],
-                routine=self.routines[2]
-            )
+            for n in range(self.routine_length):
+                idx = n % 3
+                if idx == 0:
+                    continue
+                
+                RoutineResultFactory(
+                    result=RESULT_CHOICES[idx][0],
+                    routine=self.routines[n]
+                )
         
         self.auth_client.set_client_auth()
         res = self.auth_client.client.get(
@@ -61,7 +62,7 @@ class RoutineListTestCase(APITestCase):
         for n in range(self.routine_length):
             self.assertEqual(res.data["data"][n]["goal"], self.routines[n].goal)
             self.assertEqual(res.data["data"][n]["title"], self.routines[n].title)
-            self.assertEqual(res.data["data"][n]["result"], RoutineResult.RESULT_CHOICES[n][0])
+            self.assertEqual(res.data["data"][n]["result"], RESULT_CHOICES[n % 3][0])
 
     def test_routine_list_with_missing_param(self):
         """루틴 목록 조회 테스트(패러미터 누락)"""
