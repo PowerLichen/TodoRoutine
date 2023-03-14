@@ -121,10 +121,6 @@ class RoutineRetrieveSerializer(serializers.ModelSerializer):
         return "NOT"
 
 
-class DateSerializer(serializers.Serializer):
-    today = serializers.DateField(required=True)
-
-
 class RoutineListSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='account_id', read_only=True)
     result = serializers.SerializerMethodField()
