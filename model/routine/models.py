@@ -3,14 +3,13 @@ from django.db import models
 
 from model.core.models import DeletedAndTimeStampedModel
 from model.core.models import TimeStampedModel
+from model.routine.choices import CATEGORY_CHOICES
+from model.routine.choices import RESULT_CHOICES
+from model.routine.choices import WEEKDAY_CHOICES
+from model.routine.managers import RoutineActiveManager
 
 
-class Routine(DeletedAndTimeStampedModel):
-    CATEGORY_CHOICES = (
-        ("MIRACLE", "MIRACLE"),
-        ("HOMEWORK", "HOMEWORK"),
-    )
-    
+class Routine(DeletedAndTimeStampedModel):    
     routine_id = models.BigAutoField(primary_key=True)
     account = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -26,13 +25,7 @@ class Routine(DeletedAndTimeStampedModel):
         db_table = "routine"
 
 
-class RoutineResult(DeletedAndTimeStampedModel): 
-    RESULT_CHOICES = (
-        ("NOT", "NOT"),
-        ("TRY", "TRY"),
-        ("DONE", "DONE"),
-    )
-       
+class RoutineResult(DeletedAndTimeStampedModel):       
     routine_result_id = models.BigAutoField(primary_key=True)
     routine = models.ForeignKey(
         Routine,
@@ -45,16 +38,7 @@ class RoutineResult(DeletedAndTimeStampedModel):
         db_table = "routine_result"
         
         
-class RoutineDay(TimeStampedModel):
-    WEEKDAY_CHOICES = (
-        ("MON", "MON"),
-        ("TUE", "TUE"),
-        ("WED", "WED"),
-        ("THU", "THU"),
-        ("FRI", "FRI"),
-        ("SAT", "SAT"),
-        ("SUN", "SUN"),
-    )
+class RoutineDay(TimeStampedModel):    
     day = models.CharField(max_length=3, choices=WEEKDAY_CHOICES)
     routine = models.ForeignKey(
         Routine,
