@@ -21,6 +21,8 @@ class Routine(DeletedAndTimeStampedModel):
     goal = models.TextField()
     is_alarm = models.BooleanField("alarm", default=False)
     
+    active_objects = RoutineActiveManager()
+    
     class Meta:
         db_table = "routine"
 
