@@ -6,7 +6,6 @@ from model.core.models import TimeStampedModel
 from model.routine.choices import CATEGORY_CHOICES
 from model.routine.choices import RESULT_CHOICES
 from model.routine.choices import WEEKDAY_CHOICES
-from model.routine.managers import RoutineActiveManager
 
 
 class Routine(DeletedAndTimeStampedModel):    
@@ -20,8 +19,6 @@ class Routine(DeletedAndTimeStampedModel):
     category = models.CharField(max_length=8, choices=CATEGORY_CHOICES)
     goal = models.TextField()
     is_alarm = models.BooleanField("alarm", default=False)
-    
-    active_objects = RoutineActiveManager()
     
     class Meta:
         db_table = "routine"
