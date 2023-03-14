@@ -1,18 +1,32 @@
+from django_filters import rest_framework as filters
 from django.db.models import F
-from django.db.models import Q
 from django.db.models import FilteredRelation
-from django.db.models import Manager
-from django.db.models import QuerySet
+from django.db.models import Q
 
 from model.routine.choices import WEEKDAY_CHOICES
+from model.routine.models import Routine
 
 
-class RoutineActiveQuerySet(QuerySet):
-    def list_by_date(self, date):
-        today = date
+class RoutineFilterBackend(filters.DjangoFilterBackend):
+    def get_filterset_class(self, view, queryset=None):
+        if view.action == "list":
+            return RoutineListFilter
+        return super().get_filterset_class(view, queryset)
+
+
+class RoutineListFilter(filters.FilterSet):
+    today = filters.DateFilter(
+        field_name="created_at",
+        method="get_filter_by_date",
+        required=True
+    )
+    
+    def get_filter_by_date(self, queryset, field_name, value):
+        today = value
         cur_weekday = WEEKDAY_CHOICES[today.weekday()][0]
+        
         queryset = (
-            self
+            queryset
             .annotate(
                 today_routine_result=FilteredRelation(
                     "routine_result_set",
@@ -29,13 +43,9 @@ class RoutineActiveQuerySet(QuerySet):
                 result=F("today_routine_result__result")
             )
         )
-        
+
         return queryset
-
-
-class RoutineActiveManager(Manager):
-    def get_queryset(self):
-        return RoutineActiveQuerySet(self.model, using=self._db).filter(is_deleted=False)
     
-    def result_list(self, date):
-        return self.get_queryset().list_by_date(date)
+    class Meta:
+        model = Routine
+        fields = ["today"]
