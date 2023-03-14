@@ -122,7 +122,7 @@ class RoutineRetrieveSerializer(serializers.ModelSerializer):
 
 
 class DateSerializer(serializers.Serializer):
-    today = serializers.DateField()
+    today = serializers.DateField(required=True)
 
 
 class RoutineListSerializer(serializers.ModelSerializer):
