@@ -62,7 +62,7 @@ class RoutineCreateTestCase(APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_routine_create_with_missing_category(self):
+    def test_routine_create_with_missing_goal(self):
         """루틴 생성 실패 테스트 (goal 누락)"""
         self.data.pop("goal")
         res = self.auth_client.client.post(
@@ -71,7 +71,7 @@ class RoutineCreateTestCase(APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_routine_create_with_missing_category(self):
+    def test_routine_create_with_missing_days(self):
         """루틴 생성 실패 테스트 (days 누락)"""
         self.data.pop("days")
         res = self.auth_client.client.post(
