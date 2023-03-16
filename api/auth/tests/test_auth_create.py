@@ -70,7 +70,7 @@ class AuthCreateTestCase(APITestCase):
         )
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_auth_create_with_password_length_less_than_8(self):
+    def test_auth_create_with_password_not_contain_number(self):
         """계정 생성 실패 테스트(password 숫자 없음)"""
         self.data["password"] = "aaaaaaa!"
         res = self.client.post(
