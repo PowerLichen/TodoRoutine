@@ -1,3 +1,4 @@
+from datetime import datetime
 from datetime import timedelta
 
 from django.utils import timezone
@@ -5,8 +6,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import NotFound
 
 from model.routine.models import Routine
-from model.routine.models import RoutineDay
-from model.routine.models import RoutineResult
+from model.routine.choices import RESULT_CHOICES
+from model.routine.choices import WEEKDAY_CHOICES
 
 
 class RoutineSerializer(serializers.ModelSerializer):
@@ -19,7 +20,7 @@ class RoutineCreateSerializer(serializers.ModelSerializer):
     account = serializers.HiddenField(
         default=serializers.CurrentUserDefault(),
     )
-    days = serializers.MultipleChoiceField(choices=RoutineDay.WEEKDAY_CHOICES)
+    days = serializers.MultipleChoiceField(choices=WEEKDAY_CHOICES, allow_empty=False)
     
     class Meta:
         model = Routine
@@ -49,7 +50,7 @@ class RoutineCreateSerializer(serializers.ModelSerializer):
 
 
 class RoutineUpdateSerializer(serializers.ModelSerializer):
-    days = serializers.MultipleChoiceField(choices=RoutineDay.WEEKDAY_CHOICES)
+    days = serializers.MultipleChoiceField(choices=WEEKDAY_CHOICES)
     
     class Meta:
         model = Routine
@@ -99,7 +100,7 @@ class RoutineRetrieveSerializer(serializers.ModelSerializer):
         target_weekday = [dayset.day for dayset in obj.routine_day_set.all()]
         for i in range(7):
             cur_weekday = (today_weekday - i) % 7
-            if RoutineDay.WEEKDAY_CHOICES[cur_weekday][0] in target_weekday:
+            if WEEKDAY_CHOICES[cur_weekday][0] in target_weekday:
                 result = i
                 break
         
@@ -118,10 +119,6 @@ class RoutineRetrieveSerializer(serializers.ModelSerializer):
         if status is not None:
             return status.result
         return "NOT"
-
-
-class DateSerializer(serializers.Serializer):
-    today = serializers.DateField()
 
 
 class RoutineListSerializer(serializers.ModelSerializer):
@@ -155,11 +152,11 @@ class RoutineDestroySerializer(serializers.ModelSerializer):
 
 class RoutineResultUpdateSerializer(serializers.Serializer):
     today = serializers.DateField()
-    result = serializers.ChoiceField(choices=RoutineResult.RESULT_CHOICES)
+    result = serializers.ChoiceField(choices=RESULT_CHOICES)
         
     def update(self, instance, validated_data):
         weekday_num = validated_data["today"].weekday()
-        weekday_str = RoutineDay.WEEKDAY_CHOICES[weekday_num][0]
+        weekday_str = WEEKDAY_CHOICES[weekday_num][0]
         
         valid_routine_day = instance.routine_day_set.all().filter(day=weekday_str)
         if len(valid_routine_day) == 0:
@@ -171,9 +168,13 @@ class RoutineResultUpdateSerializer(serializers.Serializer):
                 "result": validated_data["result"]
             }
         )
-        
+        current = datetime.combine(
+            date=validated_data["today"],
+            time=datetime.min.time(),
+            tzinfo=timezone.get_default_timezone()
+        )
         if created == True:
-            obj.created_at = validated_data["today"]
+            obj.created_at = current
             
         obj.save()
         return obj
